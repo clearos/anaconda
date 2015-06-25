@@ -6,7 +6,7 @@ diff -uNr anaconda-19.31.79__orig/pyanaconda/bootloader.py anaconda-19.31.79/pya
      @property
      def stage2_format_types(self):
 -        if productName.startswith("Red Hat "):
-+        if productName.startswith("Red Hat ") or productName.startswith("CentOS"):
++        if productName.startswith("Red Hat ") or productName.startswith("CentOS") or productName.startswith("ClearOS"):
              return ["xfs", "ext4", "ext3", "ext2", "btrfs"]
          else:
              return ["ext4", "ext3", "ext2", "btrfs", "xfs"]
@@ -15,7 +15,7 @@ diff -uNr anaconda-19.31.79__orig/pyanaconda/bootloader.py anaconda-19.31.79/pya
      @property
      def stage2_format_types(self):
 -        if productName.startswith("Red Hat "):
-+        if productName.startswith("Red Hat ") or productName.startswith("CentOS"):
++        if productName.startswith("Red Hat ") or productName.startswith("CentOS") or productName.startswith("ClearOS"):
              return ["xfs", "ext4", "ext3", "ext2"]
          else:
              return ["ext4", "ext3", "ext2", "xfs"]

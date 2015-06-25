@@ -2,11 +2,11 @@
 
 Summary: Graphical system installer
 Name:    anaconda
-Patch1:	anaconda-centos-add-centos-install-class.patch
-Patch2:	anaconda-centos-set-right-eula-location.patch
-Patch3: anaconda-centos-efidir-centos.patch
-Patch4: anaconda-centos-disable-mirrors.patch
-Patch5: anaconda-centos-bootfs-default-to-xfs.patch
+Patch1: anaconda-clearos-add-clearos-install-class.patch
+Patch2: anaconda-clearos-set-right-eula-location.patch
+Patch3: anaconda-clearos-efidir-clearos.patch
+Patch4: anaconda-clearos-disable-mirrors.patch
+Patch5: anaconda-clearos-bootfs-default-to-xfs.patch
 Version: 19.31.123
 Release: 1%{?dist}.2
 License: GPLv2+
@@ -337,6 +337,10 @@ update-desktop-database &> /dev/null || :
 %{_datadir}/anaconda/help/*
 
 %changelog
+
+* Fri Apr 03 2015 Shad L. Lords <slords@clearfoundation.com> - 19.31.123-1.v7.2
+- Add patch to inject ClearOS install class, and make it default
+
 * Thu Mar 26 2015 Karanbir Singh <kbsingh@centos.org> - 19.31.123-1.el7.centos.2
 - Bump for rebuild
 

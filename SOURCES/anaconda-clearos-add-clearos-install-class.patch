@@ -1,7 +1,7 @@
-diff -uNr anaconda-19.31.79__orig/pyanaconda/installclasses/centos.py anaconda-19.31.79/pyanaconda/installclasses/centos.py
---- anaconda-19.31.79__orig/pyanaconda/installclasses/centos.py	1970-01-01 01:00:00.000000000 +0100
-+++ anaconda-19.31.79/pyanaconda/installclasses/centos.py	2014-06-16 22:47:16.033891088 +0100
-@@ -0,0 +1,88 @@
+diff -uNr anaconda-19.31.79__orig/pyanaconda/installclasses/clearos.py anaconda-19.31.79/pyanaconda/installclasses/clearos.py
+--- anaconda-19.31.79__orig/pyanaconda/installclasses/clearos.py	1970-01-01 01:00:00.000000000 +0100
++++ anaconda-19.31.79/pyanaconda/installclasses/clearos.py	2014-06-16 22:47:16.033891088 +0100
+@@ -0,0 +1,116 @@
 +#
 +# rhel.py
 +#
@@ -25,15 +25,19 @@ diff -uNr anaconda-19.31.79__orig/pyanaconda/installclasses/centos.py anaconda-1
 +from pyanaconda.constants import *
 +from pyanaconda.product import *
 +from pyanaconda import network
++from pyanaconda.kickstart import getAvailableDiskSpace
 +from pyanaconda import nm
++from blivet.partspec import *
++from blivet.devicelibs import swap
++from blivet.platform import platform
 +import types
 +
 +class InstallClass(BaseInstallClass):
 +    # name has underscore used for mnemonics, strip if you dont need it
-+    id = "centos"
-+    name = N_("CentOS Linux")
++    id = "clearos"
++    name = N_("ClearOS")
 +    sortPriority = 25000
-+    if productName.startswith("Red Hat ") or productName.startswith("Fedora "):
++    if productName.startswith("Red Hat ") or productName.startswith("Fedora ") or productName.startswith("CentOS"):
 +        hidden = 1
 +
 +    defaultFS = "xfs"
@@ -49,9 +53,33 @@ diff -uNr anaconda-19.31.79__orig/pyanaconda/installclasses/centos.py anaconda-1
 +
 +    efi_dir = "redhat"
 +
++    def setDefaultPartitioning(self, storage):
++        autorequests = [PartSpec(mountpoint="/", fstype=storage.defaultFSType,
++                                 size=1024, grow=True, btr=True, lv=True, 
++                                 thin=True, encrypted=True)]
++
++        bootreqs = platform.setDefaultPartitioning()
++        if bootreqs:
++            autorequests.extend(bootreqs)
++
++        disk_space = getAvailableDiskSpace(storage)
++        swp = swap.swapSuggestion(disk_space=disk_space)
++        autorequests.append(PartSpec(fstype="swap", size=swp, grow=False,
++                                     lv=True, encrypted=True))
++    
++        for autoreq in autorequests:
++            if autoreq.fstype is None:
++                if autoreq.mountpoint == "/boot":
++                    autoreq.fstype = storage.defaultBootFSType
++                else:
++                    autoreq.fstype = storage.defaultFSType
++    
++        storage.autoPartitionRequests = autorequests
++
 +    def configure(self, anaconda):
 +        BaseInstallClass.configure(self, anaconda)
-+        BaseInstallClass.setDefaultPartitioning(self, anaconda.storage)
++        self.setDefaultPartitioning(anaconda.storage)
++        anaconda.ksdata.firewall.enabled = False
 +
 +    # Set first boot policy regarding ONBOOT value
 +    # (i.e. which network devices should be activated automatically after reboot)
@@ -98,7 +126,7 @@ diff -uNr anaconda-19.31.79__orig/pyanaconda/installclasses/fedora.py anaconda-1
      name = N_("_Fedora")
      sortPriority = 10000
 -    if productName.startswith("Red Hat "):
-+    if productName.startswith("Red Hat ") or productName.startswith("CentOS"):
++    if productName.startswith("Red Hat ") or productName.startswith("CentOS") or productName.startswith("ClearOS"):
          hidden = 1
  
      _l10n_domain = "anaconda"
