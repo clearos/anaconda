@@ -5,7 +5,7 @@ Forked version of anaconda with ClearOS changes applied
 ## Update usage
   Add __#kojibuild__ to commit message to automatically build
 
-* git clone git://github.com/clearos/anaconda.git
+* git clone git+ssh://git@github.com/clearos/anaconda.git
 * cd anaconda
 * git checkout c7
 * git remote add upstream git://git.centos.org/rpms/anaconda.git
