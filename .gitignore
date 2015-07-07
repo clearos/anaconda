@@ -1,2 +1,4 @@
 SOURCES/anaconda-19.31.123.tar.bz2
 SOURCES/anaconda-user-help-7.1.4.tar.gz
+/Makefile
+*.src.rpm
