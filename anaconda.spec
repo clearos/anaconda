@@ -16,9 +16,9 @@ URL:     http://fedoraproject.org/wiki/Anaconda
 # ./configure
 # make dist
 Source0: %{name}-%{version}.tar.bz2
-Patch1000: anaconda-centos-installclass.patch
-Patch1002: anaconda-centos-droprepos.patch
-Patch1003: anaconda-centos-unsupported-hardware-note.patch
+Patch1000: anaconda-13.21.239-installclass.patch
+Patch1002: anaconda-13.21.239-droprepo.patch
+Patch1003: anaconda-13.21.239-unsupported-hardware.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -169,9 +169,9 @@ system.  These files are of little use on an already installed system.
 %prep
 %setup -q
 
-%patch1000 -p1
-%patch1002 -p1
-%patch1003 -p1
+%patch1000 -p1 -b .installclass
+%patch1002 -p1 -b .droprepo
+%patch1003 -p1 -b .unsupported-hardware
 
 %build
 %configure --disable-static

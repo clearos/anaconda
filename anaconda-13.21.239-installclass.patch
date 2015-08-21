@@ -1,0 +1,127 @@
+--- anaconda-13.21.239/installclasses/clearos.py.installclass
++++ anaconda-13.21.239/installclasses/clearos.py
+@@ -0,0 +1,113 @@
++#
++# rhel.py
++#
++# Copyright (C) 2010  Red Hat, Inc.  All rights reserved.
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++#
++
++from installclass import BaseInstallClass
++from constants import *
++from product import *
++from flags import flags
++import os
++import types
++
++import installmethod
++import yuminstall
++
++from storage.partspec import *
++import iutil
++
++class InstallClass(BaseInstallClass):
++    # name has underscore used for mnemonics, strip if you dont need it
++    id = "community"
++    name = N_("ClearOS Community")
++    _description = N_("The default installation of %s is a minimum install. "
++                     "You can optionally select a different set of software "
++                     "now.")
++    _descriptionFields = (productName,)
++    sortPriority = 10005
++    hidden = 0
++
++    bootloaderTimeoutDefault = 5
++    bootloaderExtraArgs = ["crashkernel=auto"]
++
++    tasks = [(N_("Basic Server"),
++              ["base", "core"]),
++             (N_("Minimal"),
++              ["core"])]
++
++    def getPackagePaths(self, uri):
++        if not type(uri) == types.ListType:
++            uri = [uri,]
++
++        return {productName: uri}
++
++    def setDefaultPartitioning(self, storage, platform):
++        autorequests = [PartSpec(mountpoint="/", fstype=storage.defaultFSType,
++            size=1024, grow=True, asVol=True)]
++
++        bootreq = platform.setDefaultPartitioning()
++        if bootreq:
++            autorequests.extend(bootreq)
++
++        (minswap, maxswap) = iutil.swapSuggestion()
++        autorequests.append(PartSpec(fstype="swap", size=minswap, maxSize=maxswap,
++            grow=True, asVol=True))
++
++        storage.autoPartitionRequests = autorequests
++
++    def setInstallData(self, anaconda):
++        BaseInstallClass.setInstallData(self, anaconda)
++        anaconda.id.security.setSELinux(SELINUX_DISABLED)
++        anaconda.id.storage.zeroMbr = 1
++        anaconda.id.storage.clearPartType = CLEARPART_TYPE_ALL
++        self.setDefaultPartitioning(anaconda.id.storage, anaconda.platform)
++        anaconda.id.firewall.portlist.append("81:tcp")
++        anaconda.id.network.setHostname("system.domain.lan")
++        anaconda.id.network.overrideDHCPhostname = True
++
++        devices = anaconda.id.network.netdevices
++        if devices:
++            device = min(devices.keys())
++        dev = devices.get(device, None)
++        if dev:
++            dev.set (("BOOTPROTO", "dhcp"))
++            dev.set (("ONBOOT", "yes"))
++
++    def setSteps(self, anaconda):
++        BaseInstallClass.setSteps(self, anaconda)
++        anaconda.dispatch.skipStep("tasksel")
++        anaconda.dispatch.skipStep("firstboot")
++        anaconda.dispatch.skipStep("partition")
++
++    def getBackend(self):
++        if flags.livecdInstall:
++            import livecd
++            return livecd.LiveCDCopyBackend
++        else:
++            return yuminstall.YumBackend
++
++    def productMatches(self, oldprod):
++        if oldprod is None:
++            return False
++
++        if oldprod.startswith(productName):
++            return True
++
++        return False
++
++    def __init__(self):
++        BaseInstallClass.__init__(self)
+--- anaconda-13.21.239/installclasses/fedora.py.installclass
++++ anaconda-13.21.239/installclasses/fedora.py
+@@ -42,7 +42,7 @@ class InstallClass(BaseInstallClass):
+                       "now.")
+     _descriptionFields = (productName,)
+     sortPriority = 10000
+-    if productName.startswith("Red Hat Enterprise"):
++    if productName.startswith("Red Hat Enterprise") or productName.startswith("CentOS") or productName.startswith("ClearOS"):
+         hidden = 1
+ 
+     tasks = [(N_("Graphical Desktop"),
