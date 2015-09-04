@@ -7,9 +7,8 @@ Patch2: anaconda-clearos-set-right-eula-location.patch
 Patch3: anaconda-clearos-efidir-clearos.patch
 Patch4: anaconda-clearos-disable-mirrors.patch
 Patch5: anaconda-clearos-bootfs-default-to-xfs.patch
-Patch6: anaconda-clearos-remove-user-add.patch
 Version: 19.31.123
-Release: 1%{?dist}.3
+Release: 1%{?dist}.2
 License: GPLv2+
 Group:   Applications/System
 URL:     http://fedoraproject.org/wiki/Anaconda
@@ -241,7 +240,6 @@ This package hold the content for the Anaconda built-in help system.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 
 %build
 %configure --disable-static \
@@ -339,8 +337,6 @@ update-desktop-database &> /dev/null || :
 %{_datadir}/anaconda/help/*
 
 %changelog
-* Fri Apr 03 2015 Shad L. Lords <slords@clearfoundation.com> - 19.31.123-1.v7.3
-- Remove user options screen
 
 * Fri Apr 03 2015 Shad L. Lords <slords@clearfoundation.com> - 19.31.123-1.v7.2
 - Add patch to inject ClearOS install class, and make it default
