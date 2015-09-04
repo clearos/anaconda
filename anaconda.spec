@@ -4,7 +4,7 @@
 Summary: Graphical system installer
 Name:    anaconda
 Version: 13.21.239
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 License: GPLv2+
 Group:   Applications/System
 URL:     http://fedoraproject.org/wiki/Anaconda
@@ -19,6 +19,7 @@ Source0: %{name}-%{version}.tar.bz2
 Patch1000: anaconda-13.21.239-installclass.patch
 Patch1002: anaconda-13.21.239-droprepo.patch
 Patch1003: anaconda-13.21.239-unsupported-hardware.patch
+Patch1004: anaconda-13.21.239-mediacheck.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -172,6 +173,7 @@ system.  These files are of little use on an already installed system.
 %patch1000 -p1 -b .installclass
 %patch1002 -p1 -b .droprepo
 %patch1003 -p1 -b .unsupported-hardware
+%patch1004 -p1 -b .mediacheck
 
 %build
 %configure --disable-static
@@ -230,6 +232,10 @@ update-desktop-database &> /dev/null || :
 %endif
 
 %changelog
+* Fri Sep 4 2015 Shad L. Lords <slords@clearfoundation.com> - 13.21.239-1.1
+- Roll in ClearOS Branding
+- Remove mediacheck unless requested
+
 * Wed Jul 22 2015 Johnny Hughes <johnny@centos.org> - 13.21.239-1
 - Roll in CentOS Branding
 

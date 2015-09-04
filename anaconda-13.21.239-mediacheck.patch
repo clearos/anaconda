@@ -1,0 +1,13 @@
+--- anaconda-13.21.239/loader/cdinstall.c.mediacheck
++++ anaconda-13.21.239/loader/cdinstall.c
+@@ -254,8 +254,8 @@ static void queryCDMediaCheck(char *dev,
+         return;
+ 
+     /* see if we should check image(s) */
+-    /* in rescue mode only test if they explicitly asked to */
+-    if (!FL_RESCUE(flags) || FL_MEDIACHECK(flags)) {
++    /* only test if they explicitly asked to */
++    if (FL_MEDIACHECK(flags)) {
+         startNewt();
+         rc = newtWinChoice(_("Disc Found"), _("OK"), _("Skip"),
+              _("To begin testing the media before installation press %s.\n\n"
