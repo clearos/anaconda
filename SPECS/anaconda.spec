@@ -7,6 +7,7 @@ Patch2: anaconda-clearos-set-right-eula-location.patch
 Patch3: anaconda-clearos-efidir-clearos.patch
 Patch4: anaconda-clearos-disable-mirrors.patch
 Patch5: anaconda-clearos-bootfs-default-to-xfs.patch
+Patch6: anaconda-clearos-remove-user-add.patch
 Version: 19.31.123
 Release: 1%{?dist}.2
 License: GPLv2+
@@ -240,6 +241,7 @@ This package hold the content for the Anaconda built-in help system.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 %configure --disable-static \
