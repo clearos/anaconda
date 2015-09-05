@@ -9,7 +9,7 @@ Patch4: anaconda-clearos-disable-mirrors.patch
 Patch5: anaconda-clearos-bootfs-default-to-xfs.patch
 Patch6: anaconda-clearos-nouser.patch
 Version: 19.31.123
-Release: 1%{?dist}.3
+Release: 1%{?dist}.4
 License: GPLv2+
 Group:   Applications/System
 URL:     http://fedoraproject.org/wiki/Anaconda
@@ -339,8 +339,11 @@ update-desktop-database &> /dev/null || :
 %{_datadir}/anaconda/help/*
 
 %changelog
-* Sat Sep 5 2015 Shad L. Lords <slords@clearfoundation.com> - 19.31.123-1.v7.3
-- Remove user creation dialog
+* Sat Sep 5 2015 Shad L. Lords <slords@clearfoundation.com> - 19.31.123-1.v7.4
+- New attempt to remove user options screen
+
+* Fri Apr 03 2015 Shad L. Lords <slords@clearfoundation.com> - 19.31.123-1.v7.3
+- Remove user options screen
 
 * Fri Apr 03 2015 Shad L. Lords <slords@clearfoundation.com> - 19.31.123-1.v7.2
 - Add patch to inject ClearOS install class, and make it default
