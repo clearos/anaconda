@@ -1,0 +1,12 @@
+diff -uNr anaconda-19.31.79__orig/pyanaconda/constants.py anaconda-19.31.79/pyanaconda/constants.py
+--- anaconda-19.31.79__orig/pyanaconda/constants.py	2014-04-29 01:45:59.000000000 +0100
++++ anaconda-19.31.79/pyanaconda/constants.py	2014-06-18 23:42:35.944668381 +0100
+@@ -50,7 +50,7 @@
+ productArch = product.productArch
+ bugzillaUrl = product.bugUrl
+ isFinal = product.isFinal
+-eulaLocation = "/usr/share/redhat-release/EULA"
++eulaLocation = "/usr/share/clearos-release/EULA"
+ 
+ # for use in device names, eg: "fedora", "rhel"
+ shortProductName = productName.lower()
