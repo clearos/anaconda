@@ -171,7 +171,7 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/centos.py anaconda-21.4
 diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py anaconda-21.48.22.56-clear7/pyanaconda/installclasses/clearos.py
 --- anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py	1969-12-31 19:00:00.000000000 -0500
 +++ anaconda-21.48.22.56-clear7/pyanaconda/installclasses/clearos.py	2016-01-14 15:34:02.738699131 -0500
-@@ -0,0 +1,119 @@
+@@ -0,0 +1,120 @@
 +#
 +# rhel.py
 +#
@@ -195,6 +195,7 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py anaconda-21.
 +from pyanaconda.constants import *
 +from pyanaconda.product import *
 +from pyanaconda import network
++from pyanaconda import iutil
 +from pyanaconda.kickstart import getAvailableDiskSpace
 +from pyanaconda import nm
 +from blivet.partspec import *
@@ -277,7 +278,7 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py anaconda-21.
 +            return
 +        if nm.nm_device_type_is_wifi(devName):
 +            return
-+        ifcfg_path = network.find_ifcfg_file_of_device(devName, root_path=ROOT_PATH)
++        ifcfg_path = network.find_ifcfg_file_of_device(devName, root_path=iutil.getSysroot())
 +        if not ifcfg_path:
 +            return
 +        ifcfg = network.IfcfgFile(ifcfg_path)
