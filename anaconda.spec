@@ -3,8 +3,8 @@
 
 Summary: Graphical system installer
 Name:    anaconda
-Version: 13.21.239
-Release: 1%{?dist}.1
+Version: 13.21.254
+Release: 1%{?dist}
 License: GPLv2+
 Group:   Applications/System
 URL:     http://fedoraproject.org/wiki/Anaconda
@@ -40,11 +40,11 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %define syscfgdatever 1.9.48
 %define pythonpyblockver 0.45-2
 %define e2fsver 1.41.0
-%define nmver 1:0.7.1-3.git20090414
+%define nmver 1:0.8.1-104
 %define dbusver 1.2.3
 %define createrepover 0.4.7
 %define yumutilsver 1.1.11-3
-%define iscsiver 6.2.0.870-3
+%define iscsiver 6.2.0.873-16
 %define pythoncryptsetupver 0.0.6
 %define mehver 0.8
 %define sckeyboardver 1.3.1
@@ -232,12 +232,168 @@ update-desktop-database &> /dev/null || :
 %endif
 
 %changelog
-* Fri Sep 4 2015 Shad L. Lords <slords@clearfoundation.com> - 13.21.239-1.1
+* Fri Jun 3 2016 Shad L. Lords <slords@clearfoundation.com> - 13.21.254-1
 - Roll in ClearOS Branding
 - Remove mediacheck unless requested
 
-* Wed Jul 22 2015 Johnny Hughes <johnny@centos.org> - 13.21.239-1
-- Roll in CentOS Branding
+* Tue May 10 2016 Johnny Hughes <johnny@centos.org> - 13.21.254-1
+- CentOS Branding
+
+* Mon Apr 11 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.254-1
+- Revert "Always write splashimage to grub.cfg on UEFI (bcl)"
+  Related: rhbz#1325971
+  Resolves: rhbz#1325971
+
+* Fri Apr 08 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.253-1
+- Complete support for mesa-libEGL in upd-instroot (sbueno+anaconda)
+  Resolves: rhbz#1316646
+
+* Tue Mar 29 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.252-1
+- Add mesa-libEGL to upd-instroot. (sbueno+anaconda)
+  Resolves: rhbz#1316646
+- Catch KeyError when checking for MD UUID in filter gui. (dlehman)
+  Related: rhbz#1269872
+  Resolves: rhbz#1320545
+- Activate also non-ibft devices requested by boot options (ksdevice)
+  (rvykydal)
+  Resolves: rhbz#1314806
+
+* Tue Mar 22 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.251-1
+- Adjust commit 74014d71 after recent reverts. (dlehman)
+  Related: rhbz#1269872
+- Revert "Refactor variable name (sbueno+anaconda)"
+  Resolves: rhbz#1319697
+- Revert "Fix multipath UI representation (sbueno+anaconda)"
+  Resolves: rhbz#1319697
+- Revert "Bios RAID traceback on Filter GUI (sbueno+anaconda)"
+  Resolves: rhbz#1319697
+- Add the /EFI directory to the boot.iso (bcl)
+  Resolves: rhbz#1188876
+- Clean up devicetree filtering of md containers. (dlehman)
+  Related: rhbz#1120640
+  Related: rhbz#1269872
+- Remove pyblock/dmraid remnants from md container handling. (dlehman)
+  Related: rhbz#1269872
+- Don't use pyblock/dmraid to get sizes of imsm/isw arrays. (dlehman)
+  Resolves: rhbz#1269872
+- Move mdadm.conf entry creation to a function. (dlehman)
+  Related: rhbz#1269872
+- network: disable NM for parent device of vlan configured in ibft (rvykydal)
+  Resolves: rhbz#831002
+- network: set ifname= for parent of vlan defined in ibft (rvykydal)
+  Resolves: rhbz#831002
+
+* Mon Mar 14 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.250-1
+- Create ibft vlan ifcfg file in stage2 if needed (rvykydal)
+  Resolves: rhbz#831002
+
+* Tue Mar 08 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.249-1
+- Bios RAID traceback on Filter GUI (rmarshall)
+  Resolves: rhbz#1309069
+- Don't ignore FW RAID containers if everything should be used (vpodzime)
+  Related: rhbz#1120640
+- Fix pki cert path in initrd (bcl)
+  Resolves: rhbz#1259880
+
+* Mon Feb 22 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.248-1
+- Wait for all udev events to finish (jstodola)
+  Resolves: rhbz#1309348
+- Run restorecon on /etc/localtime to reset SElinux context. (sbueno+anaconda)
+  Resolves: rhbz#1302290
+
+* Tue Feb 16 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.247-1
+- Make sure devices configured by NM from iBFT have correct ifcfg (rvykydal)
+  Resolves: rhbz#831002
+  Related: rhbz#831002
+
+* Fri Feb 05 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.246-1
+- Fix the problem of ppc img being too large (sbueno+anaconda)
+  Resolves: rhbz#1303855
+
+* Thu Jan 21 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.245-1
+- Add support for vlan id in iBFT (rvykydal)
+  Resolves: rhbz#831002
+
+* Wed Jan 20 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.244-1
+- Keep 'wipefs' in the installation environment (vpodzime)
+  Resolves: rhbz#835865
+- Handle hostname and dns setting properly in loader (sbueno+anaconda)
+  Resolves: rhbz#1214266
+- Addon repos should still be added to anaconda-ks.cfg. (clumens)
+  Resolves: rhbz#1099178
+- Only write defaultList of filtered kernel entries to /etc/zipl.conf
+  (sbueno+anaconda)
+  Resolves: rhbz#1256211
+- Increase default loglevel of NetworkManager. (sbueno+anaconda)
+  Resolves: rhbz#831777
+- Increase default logging of yum. (sbueno+anaconda)
+  Resolves: rhbz#831777
+- Fix multipath UI representation (rmarshall)
+  Resolves: rhbz#914637
+  Related: rhbz#1014425
+- Refactor variable name (rmarshall)
+  Related: rhbz#914637
+  Resolves: rhbz#914637
+
+* Fri Jan 15 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.243-1
+- Ignore MD RAID containers if all their devices are ignored (vpodzime)
+  Resolves: rhbz#1120640
+- Fix --noipv4 option in case of multiple ks network commands (rvykydal)
+  Resolves: rhbz#1011595
+  Related: rhbz#1011595
+- Fix regression in lvm snapshot detection. (dlehman)
+  Resolves: rhbz#1295897
+
+* Thu Jan 07 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.242-1
+- Make iutil.execWithCallback honor root option. (sbueno+anaconda)
+  Resolves: rhbz#883054
+- Change parameter at ks.cfg for fcoe as --nic= (jkonecny)
+  Resolves: rhbz#1225877
+- Fix IPoIB interfaces are shown as Ethernet (jkonecny)
+  Resolves: rhbz#1116633
+- Add support for ipv6 to gateway boot option (rvykydal)
+  Resolves: rhbz#1177984
+- Create symlink for NM ibft plugin rather then relocate iscsiadm (rvykydal)
+  Resolves: rhbz#831002
+  Related: rhbz#831002
+- Fixed IndexError in cleardisks_gui.py (japokorn)
+  Resolves: rhbz#1224413
+- Fix layout of "Add FCoE SAN" dialog in text and rescue mode (rvykydal)
+  Resolves: rhbz#1211931
+  Related: rhbz#1211931
+- Fix crash on "Add FCoE SAN" in text and rescue (rvykydal)
+  Resolves: rhbz#1211931
+- network: add support for vlan over bond boot option (rvykydal)
+  Resolves: rhbz#1011595
+- fcoe: take into account vlan device names trimmed to IFNAMSIZ (rvykydal)
+  Resolves: rhbz#1021067
+- Add possibility to have /usr and /var parts on iscsi (jkonecny)
+  Resolves: rhbz#856446
+
+* Mon Dec 14 2015 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.241-1
+- Prevent duplicate kernel params being written in zipl.conf (sbueno+anaconda)
+  Resolves: rhbz#1029505
+- Skip kickstart sections in loader (bcl)
+  Resolves: rhbz#1251300
+- Always write splashimage to grub.cfg on UEFI (bcl)
+  Resolves: rhbz#853844
+- Install ca-bundle certs in the initrd (bcl)
+  Resolves: rhbz#1259880
+- zerombr propagates to anaconda-ks (japokorn)
+  Resolves: rhbz#1246663
+- network: include --nodefroute option in generated kickstart (rvykydal)
+  Resolves: rhbz#1274686
+- network: don't misconfigure /etc/sysconfig/network GATEWAY (rvykydal)
+  Resolves: rhbz#1181290
+- ibft: add support for vlan id (rvykydal)
+  Resolves: rhbz#831002
+  Related: rhbz#831002
+
+* Tue Dec 01 2015 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 13.21.240-1
+- Write --cdl clearpart option to /root/anaconda-ks.cfg (jstodola)
+  Resolves: rhbz#1211559
+- Fix dasdfmt progress bar. (sbueno+anaconda)
+  Resolves: rhbz#1210450
 
 * Tue Jun 30 2015 Brian C. Lane <bcl@redhat.com> - 13.21.239-1
 - Align end sector in the appropriate direction for resize. (bcl)
