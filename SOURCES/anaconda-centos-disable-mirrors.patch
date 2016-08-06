@@ -1,0 +1,36 @@
+diff -uNr anaconda-21.48.22.56__orig/pyanaconda/packaging/yumpayload.py anaconda-21.48.22.56/pyanaconda/packaging/yumpayload.py
+--- anaconda-21.48.22.56__orig/pyanaconda/packaging/yumpayload.py	2015-10-29 14:23:19.000000000 +0000
++++ anaconda-21.48.22.56/pyanaconda/packaging/yumpayload.py	2015-12-07 17:36:49.070000000 +0000
+@@ -481,12 +481,16 @@
+     @property
+     def mirrorEnabled(self):
+         with _yum_lock:
+-            # yum initializes with plugins disabled, and when plugins are disabled
+-            # _yum.plugins is a DummyYumPlugins object, which has no useful attributes.
+-            if hasattr(self._yum.plugins, "_plugins"):
+-                return "fastestmirror" in self._yum.plugins._plugins
++            # we just skip this on CentOS since we cant support it yet
++            if productName.startswith("CentOS"):
++              return False
+             else:
+-                return False
++              # yum initializes with plugins disabled, and when plugins are disabled
++              # _yum.plugins is a DummyYumPlugins object, which has no useful attributes.
++              if hasattr(self._yum.plugins, "_plugins"):
++                  return "fastestmirror" in self._yum.plugins._plugins
++              else:
++                  return False
+ 
+     def getRepo(self, repo_id):
+         """ Return the yum repo object. """
+diff -uNr anaconda-21.48.22.56__orig/pyanaconda/packaging/yumpayload.py anaconda-21.48.22.56/pyanaconda/packaging/yumpayload.py
+--- anaconda-21.48.22.56__orig/pyanaconda/packaging/yumpayload.py	2015-12-07 21:29:36.058347960 +0000
++++ anaconda-21.48.22.56/pyanaconda/packaging/yumpayload.py	2015-12-07 21:32:50.255770594 +0000
+@@ -43,6 +43,7 @@
+ from pyanaconda.iutil import execReadlines
+ from pyanaconda.simpleconfig import simple_replace
+ from functools import wraps
++from pyanaconda.product import productName 
+ 
+ import logging
+ log = logging.getLogger("packaging")

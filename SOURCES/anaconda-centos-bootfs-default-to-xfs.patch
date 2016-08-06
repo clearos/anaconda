@@ -1,0 +1,21 @@
+diff -uNr anaconda-21.48.22.56__orig/pyanaconda/bootloader.py anaconda-21.48.22.56/pyanaconda/bootloader.py
+--- anaconda-21.48.22.56__orig/pyanaconda/bootloader.py	2015-10-29 14:23:19.000000000 +0000
++++ anaconda-21.48.22.56/pyanaconda/bootloader.py	2015-12-07 17:23:41.013000000 +0000
+@@ -1411,7 +1411,7 @@
+ 
+     @property
+     def stage2_format_types(self):
+-        if productName.startswith("Red Hat "):
++        if productName.startswith("Red Hat ") or productName.startswith("CentOS"):
+             return ["xfs", "ext4", "ext3", "ext2", "btrfs"]
+         else:
+             return ["ext4", "ext3", "ext2", "btrfs", "xfs"]
+@@ -2105,7 +2105,7 @@
+ 
+     @property
+     def stage2_format_types(self):
+-        if productName.startswith("Red Hat "):
++        if productName.startswith("Red Hat ") or productName.startswith("CentOS"):
+             return ["xfs", "ext4", "ext3", "ext2"]
+         else:
+             return ["ext4", "ext3", "ext2", "xfs"]

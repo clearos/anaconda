@@ -1,0 +1,18 @@
+diff -uNr anaconda-21.48.22.56__orig/data/help/en-US/CentOSPlaceholder.html anaconda-21.48.22.56/data/help/en-US/CentOSPlaceholder.html
+--- anaconda-21.48.22.56__orig/data/help/en-US/CentOSPlaceholder.html	1970-01-01 01:00:00.000000000 +0100
++++ anaconda-21.48.22.56/data/help/en-US/CentOSPlaceholder.html	2015-12-07 17:07:05.017000000 +0000
+@@ -0,0 +1,5 @@
++<body>
++<h1>The Anaconda built-in help</h1>
++<p>...is not yet available for this screen.</p>
++<p>You can check out the CentOS Linux resouces online at https://wiki.centos.org/InstallerHelp.</p>
++</body>
+diff -uNr anaconda-21.48.22.56__orig/data/help/en-US/CentOSPlaceholderWithLinks.html anaconda-21.48.22.56/data/help/en-US/CentOSPlaceholderWithLinks.html
+--- anaconda-21.48.22.56__orig/data/help/en-US/CentOSPlaceholderWithLinks.html	1970-01-01 01:00:00.000000000 +0100
++++ anaconda-21.48.22.56/data/help/en-US/CentOSPlaceholderWithLinks.html	2015-12-07 17:09:47.845000000 +0000
+@@ -0,0 +1,5 @@
++<body>
++<h1>The Anaconda built-in help</h1>
++<p>...is not yet available for this screen.</p>
++<p>You can check out the CentOS Linux resouces online at https://wiki.centos.org/InstallerHelp.</p>
++</body>

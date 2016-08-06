@@ -1,0 +1,116 @@
+From c72f979499f5af3091ad8f2017442b3728cdff2f Mon Sep 17 00:00:00 2001
+From: Colin Walters <walters@verbum.org>
+Date: Tue, 16 Jun 2015 11:24:20 -0400
+Subject: [PATCH] Rebase
+
+---
+ pyanaconda/packaging/rpmostreepayload.py | 67 ++++++++++++++++++++------------
+ 1 file changed, 43 insertions(+), 24 deletions(-)
+
+diff --git a/pyanaconda/packaging/rpmostreepayload.py b/pyanaconda/packaging/rpmostreepayload.py
+index 5eacd9f..f979c3e 100644
+--- a/pyanaconda/packaging/rpmostreepayload.py
++++ b/pyanaconda/packaging/rpmostreepayload.py
+@@ -138,24 +138,25 @@ class RPMOSTreePayload(ArchivePayload):
+             ["admin", "--sysroot=" + iutil.getTargetPhysicalRoot(),
+              "init-fs", iutil.getTargetPhysicalRoot()])
+ 
+-        repo_arg = "--repo=" + iutil.getTargetPhysicalRoot() + '/ostree/repo'
++        self._sysroot_path = Gio.File.new_for_path(iutil.getTargetPhysicalRoot())
++        sysroot = OSTree.Sysroot.new(self._sysroot_path)
++        sysroot.load(cancellable)
++        repo = sysroot.get_repo(None)[1]
++        # We don't support resuming from interrupted installs
++        repo.set_disable_fsync(True)
+ 
+-        # Store this for use in postInstall too, where we need to
+-        # undo/redo this step.
+-        self._base_remote_args = ["remote", "add"]
++        self._remoteOptions = {}
++
++        # Handle variations in pykickstart
+         if ((hasattr(ostreesetup, 'noGpg') and ostreesetup.noGpg) or
+             (hasattr(ostreesetup, 'nogpg') and ostreesetup.nogpg)):
+-            self._base_remote_args.append("--set=gpg-verify=false")
+-        self._base_remote_args.extend([ostreesetup.remote,
+-                                     ostreesetup.url])
+-        self._safeExecWithRedirect("ostree", [repo_arg] + self._base_remote_args)
++            self._remoteOptions['gpg-verify'] = GLib.Variant('b', False)
+ 
+-        self._sysroot_path = sysroot_path = Gio.File.new_for_path(iutil.getTargetPhysicalRoot())
+-        sysroot = OSTree.Sysroot.new(sysroot_path)
+-        sysroot.load(cancellable)
++        repo.remote_change(None, OSTree.RepoRemoteChange.ADD_IF_NOT_EXISTS,
++                           ostreesetup.remote, ostreesetup.url,
++                           GLib.Variant('a{sv}', self._remoteOptions),
++                           cancellable)
+ 
+-        repo = sysroot.get_repo(None)[1]
+-        repo.set_disable_fsync(True)
+         progressQ.send_message(_("Starting pull of %(branchName)s from %(source)s") % \
+                                {"branchName": ostreesetup.ref, "source": ostreesetup.remote})
+ 
+@@ -174,6 +175,14 @@ class RPMOSTreePayload(ArchivePayload):
+ 
+         progressQ.send_message(_("Preparing deployment of %s") % (ostreesetup.ref, ))
+ 
++        # Now that we have the data pulled, delete the remote for now.
++        # This will allow a remote configuration defined in the tree
++        # (if any) to override what's in the kickstart.  Otherwise,
++        # we'll re-add it in post.  Ideally, ostree would support a
++        # pull without adding a remote, but that would get quite
++        # complex.
++        repo.remote_delete(self.data.ostreesetup.remote, None)
++
+         self._safeExecWithRedirect("ostree",
+             ["admin", "--sysroot=" + iutil.getTargetPhysicalRoot(),
+              "os-init", ostreesetup.osname])
+@@ -250,24 +259,34 @@ class RPMOSTreePayload(ArchivePayload):
+ 
+     def postInstall(self):
+         super(RPMOSTreePayload, self).postInstall()
+-
++        
+         from gi.repository import OSTree
+         cancellable = None
+ 
+-        # Reload this data - we couldn't keep it open across
+-        # the remounts happening.
+         sysroot = OSTree.Sysroot.new(self._sysroot_path)
+         sysroot.load(cancellable)
+         repo = sysroot.get_repo(None)[1]
+ 
+-        # This is an ugly hack - we didn't have /etc/ostree/remotes.d,
+-        # so the remote went into /ostree/repo/config.  But we want it
+-        # in /etc, so delete that remote, then re-add it to
+-        # /etc/ostree/remotes.d, executing ostree inside the sysroot
+-        # so that it understands it's a "system repository" and should
+-        # modify /etc.
+-        repo.remote_delete(self.data.ostreesetup.remote, None)
+-        self._safeExecWithRedirect("ostree", self._base_remote_args, root=iutil.getSysroot())
++        # CentOS specific patch (for now) - pull the remote config from usr/etc if it exists.
++        # The OSTree handling here was buggy in that it wasn't looking in the sysroot
++        # for existing remotes.
++        default_remote_path = iutil.getSysroot() + '/usr/etc/ostree/remotes.d/' + self.data.ostreesetup.osname + '.conf'
++        if os.path.isfile(default_remote_path):
++            destpath = iutil.getSysroot() + '/etc/ostree/remotes.d/' + os.path.basename(default_remote_path)
++            self._safeExecWithRedirect('cp', ['-r', '-p', default_remote_path, destpath])
++        else:
++            # Following up on the "remote delete" above, we removed the
++            # remote from /ostree/repo/config.  But we want it in /etc, so
++            # re-add it to /etc/ostree/remotes.d, using the sysroot path.
++            #
++            # However, we ignore the case where the remote already exists,
++            # which occurs when the content itself provides the remote
++            # config file.
++            repo.remote_change(Gio.File.new_for_path(iutil.getSysroot()),
++                               OSTree.RepoRemoteChange.ADD_IF_NOT_EXISTS,
++                               self.data.ostreesetup.remote, self.data.ostreesetup.url,
++                               GLib.Variant('a{sv}', self._remoteOptions),
++                               cancellable)
+ 
+         boot = iutil.getSysroot() + '/boot'
+ 
+-- 
+1.8.3.1
+

@@ -3,7 +3,7 @@
 Summary: Graphical system installer
 Name:    anaconda
 Version: 21.48.22.56
-Release: 5%{?dist}.3
+Release: 5%{?dist}.4
 License: GPLv2+ and MIT
 Group:   Applications/System
 URL:     http://fedoraproject.org/wiki/Anaconda
@@ -14,7 +14,14 @@ URL:     http://fedoraproject.org/wiki/Anaconda
 # ./autogen.sh
 # make dist
 Source0: %{name}-%{version}.tar.bz2
-Patch1: anaconda-clearos.patch
+Patch1:	anaconda-centos-add-centos-install-class.patch
+Patch2:	anaconda-centos-set-right-eula-location.patch
+Patch4:	anaconda-centos-disable-mirrors.patch
+Patch5:	anaconda-centos-bootfs-default-to-xfs.patch
+Patch6:	anaconda-centos-help-text.patch
+Patch7:	anaconda-centos-skip-retry-if-not-connected.patch
+Patch8: 9800-rpmostreepayload-Rework-remote-add-handling.patch
+Patch100: anaconda-clearos.patch
 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
@@ -225,6 +232,13 @@ runtime on NFS/HTTP/FTP servers or local disks.
 %prep
 %setup -q
 %patch1 -p1
+%patch2 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+#% patch8 -p1
+%patch100 -p1
 
 %build
 %configure --disable-static \
