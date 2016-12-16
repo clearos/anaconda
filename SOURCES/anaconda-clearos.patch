@@ -1,25 +1,25 @@
-diff -ruN anaconda-21.48.22.56/data/help/en-US/ClearOSPlaceholder.html anaconda-21.48.22.56-clear7/data/help/en-US/ClearOSPlaceholder.html
---- anaconda-21.48.22.56/data/help/en-US/ClearOSPlaceholder.html	1969-12-31 17:00:00.000000000 -0700
-+++ anaconda-21.48.22.56-clear7/data/help/en-US/ClearOSPlaceholder.html	2016-08-05 23:14:41.286767090 -0600
+diff -ruN anaconda-21.48.22.93.old/data/help/en-US/ClearOSPlaceholder.html anaconda-21.48.22.93/data/help/en-US/ClearOSPlaceholder.html
+--- anaconda-21.48.22.93.old/data/help/en-US/ClearOSPlaceholder.html	1969-12-31 17:00:00.000000000 -0700
++++ anaconda-21.48.22.93/data/help/en-US/ClearOSPlaceholder.html	2016-12-16 08:53:02.348001208 -0700
 @@ -0,0 +1,5 @@
 +<body>
 +<h1>The Anaconda built-in help</h1>
 +<p>...is not yet available for this screen.</p>
 +<p>You can check out the ClearOS resouces online at https://clearos.com/</p>
 +</body>
-diff -ruN anaconda-21.48.22.56/data/help/en-US/ClearOSPlaceholderWithLinks.html anaconda-21.48.22.56-clear7/data/help/en-US/ClearOSPlaceholderWithLinks.html
---- anaconda-21.48.22.56/data/help/en-US/ClearOSPlaceholderWithLinks.html	1969-12-31 17:00:00.000000000 -0700
-+++ anaconda-21.48.22.56-clear7/data/help/en-US/ClearOSPlaceholderWithLinks.html	2016-08-05 23:14:41.288767097 -0600
+diff -ruN anaconda-21.48.22.93.old/data/help/en-US/ClearOSPlaceholderWithLinks.html anaconda-21.48.22.93/data/help/en-US/ClearOSPlaceholderWithLinks.html
+--- anaconda-21.48.22.93.old/data/help/en-US/ClearOSPlaceholderWithLinks.html	1969-12-31 17:00:00.000000000 -0700
++++ anaconda-21.48.22.93/data/help/en-US/ClearOSPlaceholderWithLinks.html	2016-12-16 08:53:02.366001250 -0700
 @@ -0,0 +1,5 @@
 +<body>
 +<h1>The Anaconda built-in help</h1>
 +<p>...is not yet available for this screen.</p>
 +<p>You can check out the ClearOS resouces online at https://clearos.com/</p>
 +</body>
-diff -ruN anaconda-21.48.22.56/pyanaconda/bootloader.py anaconda-21.48.22.56-clear7/pyanaconda/bootloader.py
---- anaconda-21.48.22.56/pyanaconda/bootloader.py	2016-08-05 14:30:42.428788415 -0600
-+++ anaconda-21.48.22.56-clear7/pyanaconda/bootloader.py	2016-08-05 23:14:41.292767112 -0600
-@@ -1411,7 +1411,7 @@
+diff -ruN anaconda-21.48.22.93.old/pyanaconda/bootloader.py anaconda-21.48.22.93/pyanaconda/bootloader.py
+--- anaconda-21.48.22.93.old/pyanaconda/bootloader.py	2016-12-16 08:52:08.407875602 -0700
++++ anaconda-21.48.22.93/pyanaconda/bootloader.py	2016-12-16 08:53:02.370001259 -0700
+@@ -1404,7 +1404,7 @@
  
      @property
      def stage2_format_types(self):
@@ -28,7 +28,7 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/bootloader.py anaconda-21.48.22.56-cle
              return ["xfs", "ext4", "ext3", "ext2", "btrfs"]
          else:
              return ["ext4", "ext3", "ext2", "btrfs", "xfs"]
-@@ -2105,7 +2105,7 @@
+@@ -2096,7 +2096,7 @@
  
      @property
      def stage2_format_types(self):
@@ -37,9 +37,9 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/bootloader.py anaconda-21.48.22.56-cle
              return ["xfs", "ext4", "ext3", "ext2"]
          else:
              return ["ext4", "ext3", "ext2", "xfs"]
-diff -ruN anaconda-21.48.22.56/pyanaconda/constants.py anaconda-21.48.22.56-clear7/pyanaconda/constants.py
---- anaconda-21.48.22.56/pyanaconda/constants.py	2016-08-05 14:30:42.407788341 -0600
-+++ anaconda-21.48.22.56-clear7/pyanaconda/constants.py	2016-08-05 23:14:41.295767123 -0600
+diff -ruN anaconda-21.48.22.93.old/pyanaconda/constants.py anaconda-21.48.22.93/pyanaconda/constants.py
+--- anaconda-21.48.22.93.old/pyanaconda/constants.py	2016-12-16 08:52:08.346875461 -0700
++++ anaconda-21.48.22.93/pyanaconda/constants.py	2016-12-16 08:53:02.374001269 -0700
 @@ -37,7 +37,7 @@
  productArch = product.productArch
  bugzillaUrl = product.bugUrl
@@ -49,9 +49,9 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/constants.py anaconda-21.48.22.56-clea
  
  # for use in device names, eg: "fedora", "rhel"
  shortProductName = productName.lower()
-diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py anaconda-21.48.22.56-clear7/pyanaconda/installclasses/clearos.py
---- anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py	1969-12-31 17:00:00.000000000 -0700
-+++ anaconda-21.48.22.56-clear7/pyanaconda/installclasses/clearos.py	2016-08-05 23:25:10.136134219 -0600
+diff -ruN anaconda-21.48.22.93.old/pyanaconda/installclasses/clearos.py anaconda-21.48.22.93/pyanaconda/installclasses/clearos.py
+--- anaconda-21.48.22.93.old/pyanaconda/installclasses/clearos.py	1969-12-31 17:00:00.000000000 -0700
++++ anaconda-21.48.22.93/pyanaconda/installclasses/clearos.py	2016-12-16 09:07:40.159102619 -0700
 @@ -0,0 +1,122 @@
 +#
 +# rhel.py
@@ -101,7 +101,7 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py anaconda-21.
 +    efi_dir = "clearos"
 +
 +    help_placeholder = "ClearOSPlaceholder.html"
-+    help_placeholder_with_links = "ClearOSPlaceholder.html"
++    help_placeholder_with_links = "ClearOSPlaceholderWithLinks.html"
 +
 +    def configure(self, anaconda):
 +        BaseInstallClass.configure(self, anaconda)
@@ -109,7 +109,7 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py anaconda-21.
 +        anaconda.ksdata.firewall.enabled = False
 +
 +    def setNetworkOnbootDefault(self, ksdata):
-+        if network.has_some_wired_autoconnect_device():
++        if any(nd.onboot for nd in ksdata.network.network if nd.device):
 +            return
 +        # choose the device used during installation
 +        # (ie for majority of cases the one having the default route)
@@ -175,9 +175,9 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/clearos.py anaconda-21.
 +                    autoreq.fstype = storage.defaultFSType
 +
 +        storage.autoPartitionRequests = autorequests
-diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/fedora.py anaconda-21.48.22.56-clear7/pyanaconda/installclasses/fedora.py
---- anaconda-21.48.22.56/pyanaconda/installclasses/fedora.py	2016-08-05 14:30:42.398788309 -0600
-+++ anaconda-21.48.22.56-clear7/pyanaconda/installclasses/fedora.py	2016-08-05 23:14:41.301767145 -0600
+diff -ruN anaconda-21.48.22.93.old/pyanaconda/installclasses/fedora.py anaconda-21.48.22.93/pyanaconda/installclasses/fedora.py
+--- anaconda-21.48.22.93.old/pyanaconda/installclasses/fedora.py	2016-12-16 08:52:08.334875433 -0700
++++ anaconda-21.48.22.93/pyanaconda/installclasses/fedora.py	2016-12-16 08:53:02.380001283 -0700
 @@ -25,7 +25,7 @@
  class FedoraBaseInstallClass(BaseInstallClass):
      name = "Fedora"
@@ -187,10 +187,10 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/installclasses/fedora.py anaconda-21.4
          hidden = True
  
      _l10n_domain = "anaconda"
-diff -ruN anaconda-21.48.22.56/pyanaconda/packaging/yumpayload.py anaconda-21.48.22.56-clear7/pyanaconda/packaging/yumpayload.py
---- anaconda-21.48.22.56/pyanaconda/packaging/yumpayload.py	2016-08-05 14:30:42.444788472 -0600
-+++ anaconda-21.48.22.56-clear7/pyanaconda/packaging/yumpayload.py	2016-08-05 23:14:41.304767156 -0600
-@@ -483,7 +483,7 @@
+diff -ruN anaconda-21.48.22.93.old/pyanaconda/packaging/yumpayload.py anaconda-21.48.22.93/pyanaconda/packaging/yumpayload.py
+--- anaconda-21.48.22.93.old/pyanaconda/packaging/yumpayload.py	2016-12-16 08:52:08.429875653 -0700
++++ anaconda-21.48.22.93/pyanaconda/packaging/yumpayload.py	2016-12-16 08:53:02.384001292 -0700
+@@ -494,7 +494,7 @@
      def mirrorEnabled(self):
          with _yum_lock:
              # we just skip this on CentOS since we cant support it yet
@@ -199,10 +199,10 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/packaging/yumpayload.py anaconda-21.48
                return False
              else:
                # yum initializes with plugins disabled, and when plugins are disabled
-diff -ruN anaconda-21.48.22.56/pyanaconda/ui/gui/spokes/user.py anaconda-21.48.22.56-clear7/pyanaconda/ui/gui/spokes/user.py
---- anaconda-21.48.22.56/pyanaconda/ui/gui/spokes/user.py	2015-10-29 08:23:19.000000000 -0600
-+++ anaconda-21.48.22.56-clear7/pyanaconda/ui/gui/spokes/user.py	2016-08-05 23:14:41.308767171 -0600
-@@ -342,6 +342,10 @@
+diff -ruN anaconda-21.48.22.93.old/pyanaconda/ui/gui/spokes/user.py anaconda-21.48.22.93/pyanaconda/ui/gui/spokes/user.py
+--- anaconda-21.48.22.93.old/pyanaconda/ui/gui/spokes/user.py	2016-09-26 12:53:02.000000000 -0600
++++ anaconda-21.48.22.93/pyanaconda/ui/gui/spokes/user.py	2016-12-16 08:53:02.388001301 -0700
+@@ -351,6 +351,10 @@
          self.b_advanced.set_sensitive(bool(self._user.name))
  
      @property
@@ -213,14 +213,15 @@ diff -ruN anaconda-21.48.22.56/pyanaconda/ui/gui/spokes/user.py anaconda-21.48.2
      def status(self):
          if len(self.data.user.userList) == 0:
              return _("No user will be created")
-diff -ruN anaconda-21.48.22.56/pyanaconda/ui/tui/spokes/user.py anaconda-21.48.22.56-clear7/pyanaconda/ui/tui/spokes/user.py
---- anaconda-21.48.22.56/pyanaconda/ui/tui/spokes/user.py	2015-10-29 08:23:19.000000000 -0600
-+++ anaconda-21.48.22.56-clear7/pyanaconda/ui/tui/spokes/user.py	2016-08-05 23:14:41.312767186 -0600
-@@ -106,7 +106,7 @@
+diff -ruN anaconda-21.48.22.93.old/pyanaconda/ui/tui/spokes/user.py anaconda-21.48.22.93/pyanaconda/ui/tui/spokes/user.py
+--- anaconda-21.48.22.93.old/pyanaconda/ui/tui/spokes/user.py	2016-09-05 06:10:25.000000000 -0600
++++ anaconda-21.48.22.93/pyanaconda/ui/tui/spokes/user.py	2016-12-16 08:53:57.479130038 -0700
+@@ -105,8 +105,7 @@
  
      @property
      def showable(self):
--        return not (self.completed and flags.automatedInstall)
+-        return not (self.completed and flags.automatedInstall
+-                    and self.data.user.seen and not self.dialog.policy.changesok)
 +        return False
  
      @property

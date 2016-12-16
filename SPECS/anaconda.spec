@@ -2,8 +2,8 @@
 
 Summary: Graphical system installer
 Name:    anaconda
-Version: 21.48.22.56
-Release: 5%{?dist}.4
+Version: 21.48.22.93
+Release: 1%{?dist}.0.1
 License: GPLv2+ and MIT
 Group:   Applications/System
 URL:     http://fedoraproject.org/wiki/Anaconda
@@ -22,12 +22,12 @@ Patch6:	anaconda-centos-help-text.patch
 Patch7:	anaconda-centos-skip-retry-if-not-connected.patch
 Patch8: 9800-rpmostreepayload-Rework-remote-add-handling.patch
 Patch100: anaconda-clearos.patch
-
+ 
 # Versions of required components (done so we make sure the buildrequires
 # match the requires versions of things).
 %define gettextver 0.18.1
 %define intltoolver 0.31.2-3
-%define pykickstartver 1.99.66.5
+%define pykickstartver 1.99.66.9
 %define yumver 3.4.3-91
 %define partedver 1.8.1
 %define pypartedver 2.5-2
@@ -49,7 +49,7 @@ Patch100: anaconda-clearos.patch
 %define langtablever 0.0.31-3
 %define libxklavierver 5.4
 %define libtimezonemapver 0.4.1-2
-%define helpver 7.1.8-1
+%define helpver 1:7.3.1-1
 
 BuildRequires: audit-libs-devel
 BuildRequires: gettext >= %{gettextver}
@@ -96,7 +96,7 @@ The anaconda package is a metapackage for the Anaconda installer.
 
 %package core
 Summary: Core of the Anaconda installer
-Requires: python-blivet >= 1:0.61.15.24
+Requires: python-blivet >= 1:0.61.15.52
 Requires: python-meh >= %{mehver}
 Requires: libreport-anaconda >= 2.0.21-1
 Requires: libreport-rhel-anaconda-bugzilla >= 2.1.11-1
@@ -187,6 +187,9 @@ Requires: NetworkManager-wifi
 Requires: yelp
 #Requires: anaconda-user-help >= %{helpver}
 
+# Needed to compile the gsettings files
+BuildRequires: gsettings-desktop-schemas
+
 %description gui
 This package contains graphical user interface for the Anaconda installer.
 
@@ -238,7 +241,7 @@ runtime on NFS/HTTP/FTP servers or local disks.
 %patch6 -p1
 %patch7 -p1
 #% patch8 -p1
-%patch100 -p1
+#%patch100 -p1
 
 %build
 %configure --disable-static \
@@ -308,6 +311,7 @@ update-desktop-database &> /dev/null || :
 
 %files gui
 %{_libdir}/python*/site-packages/pyanaconda/ui/gui/*
+%{_datadir}/themes/Anaconda/*
 
 %files tui
 %{_libdir}/python*/site-packages/pyanaconda/rescue.py
@@ -330,25 +334,580 @@ update-desktop-database &> /dev/null || :
 %{_prefix}/libexec/anaconda/dd_*
 
 %changelog
-* Thu Jan 14 2016 Karanbir Singh <kbsingh@centos.org> - 21.48.22.56-5.el7.centos.1
-- Handle CentOS infra specific atomic remotes
+* Thu Nov 30 2016 Johnny Hughes <johnny@centos.org> - 21.48.22.93-1.el7.centos.0.1
+- Refactor anaconda-centos-add-centos-install-class.patch for NM Autoconnect issue
 
-* Mon Dec  7 2015 Karanbir Singh <kbsingh@centos.org> - 21.48.22.56-5.el7.centos
-- Forward port existing patch
-- discard efivar patch, rolled into install class
-- setup new help text 
-- rebase install class
-- ensure productName is available in the yumpayload
-- use our own stubs for help
-- remove the hard dep for anaconda-user-help ( since its far too upstream specific )
-- Skip repo md retry if we are not online ( try at most 2 times (
-
-* Thu Nov 19 2015 CentOS Sources <bugs@centos.org> - 21.48.22.56-1.el7.centos
+* Thu Nov 03 2016 CentOS Sources <bugs@centos.org> - 21.48.22.93-1.el7.centos
 - Add CentOS install class as default
 - use the right path for the EULA string (issue 7165,  bstinson)
 - use efi_dir = centos
 - disable the mirrorlist options
 - make boot part fs default to xfs
+
+* Mon Sep 26 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.93-1
+- Accept any non-empty password in non-strict mode (mkolman)
+  Resolves: rhbz#1379323
+- Disable the potfile check on the password quality tests (mkolman)
+  Related: rhbz#1365112
+  Related: rhbz#1365032
+- Fix two trivial typos in the password checking code (mkolman)
+  Related: rhbz#1365112
+  Related: rhbz#1365032
+- Tweak lambda use in Dracut test (jkonecny)
+  Related: rhbz#1101653
+- Add Dracut test for reloading mod dependencies (jkonecny)
+  Related: rhbz#1101653
+
+* Tue Sep 20 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.92-1
+- Check /var/tmp directory before creating it (rvykydal)
+  Resolves: rhbz#1377761
+
+* Thu Sep 15 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.91-1
+- Fix password length in the password policy (mkolman)
+  Related: rhbz#1365112
+  Related: rhbz#1365032
+- network: avoid registering GTypes from multiple threads (lkundrak)
+  Resolves: rhbz#1366271
+- Fix traceback when payload have None as url (jkonecny)
+  Resolves: rhbz#1371494
+- Add new Dracut test and fix another ones (jkonecny)
+  Related: rhbz#1101653
+- Fix bug when we add set to list (jkonecny)
+  Related: rhbz#1101653
+- Add new helper script files to build system (jkonecny)
+  Related: rhbz#1101653
+- Add new helper scripts to the README-dd documentation (jkonecny)
+  Related: rhbz#1101653
+- Fix driver unload is disabling network settings (jkonecny)
+  Related: rhbz#1101653
+
+* Mon Sep 12 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.90-1
+- rhv: Adding rhv for installclasses (dougsland)
+  Resolves: rhbz#1337595
+
+* Mon Sep 12 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.89-1
+- Default policy should not allow empty passwords (mkolman)
+  Related: rhbz#1365112
+  Related: rhbz#1365032
+- Add unit tests for password quality checking (mkolman)
+  Related: rhbz#1365112
+  Related: rhbz#1365032
+- Fix password quality checking (mkolman)
+  Resolves: rhbz#1365112
+  Resolves: rhbz#1365032
+- dud: fix multiple inst.dd=http:// instances stalling in dracut (rvykydal)
+  Related: rhbz#1268792
+
+* Thu Sep 08 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.88-1
+- Revert "Show network spoke in the TUI reconfig mode (mkolman)"
+  Resolves: rhbz#1302165
+- Improved driver disk copying (mkolman)
+  Related: rhbz#1269915
+- network: adapt to ibft plugin being enabled by default in NM (rvykydal)
+  Resolves: rhbz#1371188
+
+* Mon Sep 05 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.87-1
+- Drop T from cp command flags when copying driver disk RPMs (mkolman)
+  Resolves: rhbz#1269915
+- network: set onboot correctly for vlan on bond device in ks (rvykydal)
+  Related: rhbz#1234849
+- network: don't show ibft configured devices in UI (rvykydal)
+  Resolves: rhbz#1309661
+- Translate press-c-to-continue correctly in TUI (mkolman)
+  Resolves: rhbz#1364539
+- network: don't set empty team slave config for NM (rvykydal)
+  Related: rhbz#1254929
+
+* Thu Aug 25 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.86-1
+- network: don't stumble upon new Device.Statistics NM dbus iface (rvykydal)
+  Resolves: rhbz#1370099
+
+* Wed Aug 24 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.85-1
+- Check before removing repo specific caches (bcl)
+  Resolves: rhbz#1369698
+
+* Tue Aug 23 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.84-1
+- Ensure LDL DASDs formatted in text ks. (sbueno+anaconda)
+  Resolves: rhbz#1259437
+- Run cache hack after moving cache to mounted storage (bcl)
+  Resolves: rhbz#1287438
+- Fix reset payload only on network change (jkonecny)
+  Resolves: rhbz#1364367
+- Disable strict password quality checking for partial kickstart installations
+  (mkolman)
+  Related: rhbz#1360263
+- Fix anaconda-pre.service wasn't properly installed (jkonecny)
+  Related: rhbz#1255659
+
+* Thu Aug 11 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.83-1
+- Fix PropertyNotFoundError PermHwAddress (jkonecny)
+  Resolves: rhbz#1364977
+- Fix screenshot taking logic (mkolman)
+  Resolves: rhbz#1327456
+- network: don't require gateway for static ipv4 config in TUI (rvykydal)
+  Resolves: rhbz#1365532
+
+* Tue Aug 09 2016 Samantha N. Bueno <sbueno+anaconda@redhat.com> - 21.48.22.82-1
+- Fix needsNetwork() to test only enabled repositories (jkonecny)
+  Resolves: rhbz#1361213
+  Related: rhbz#1358788
+- Make sure unformatted DASDs are dasdfmted in ks. (sbueno+anaconda)
+  Resolves: rhbz#1359865
+- Fix architecutre selection for help content (mkolman)
+  Related: rhbz#1260880
+- Fix needsNetwork testing only additional repositories (jkonecny)
+  Related: rhbz#1358788
+- Fix retry to download local treeinfo file (jkonecny)
+  Related: rhbz#1270354
+- Rename function for better consistency (rvykydal)
+  Related: rhbz#1259284
+- Update error message for consistency (rvykydal)
+  Related: rhbz#1259284
+- Add more specific username check messages also to gui (rvykydal)
+  Related: rhbz#1259284
+  Resolves: rhbz#1360334
+- Fix restart payload only when repo needs network (jkonecny)
+  Resolves: rhbz#1358788
+
+* Wed Jul 27 2016  <> - 21.48.22.81-1
+- network: don't activate bond/team devices regardless of --activate (rvykydal)
+  Resolves: rhbz#1358795
+- iscsi: fix getting iscsi target iface of bound target (rvykydal)
+  Resolves: rhbz#1359739
+- Clarify a nosave related log message (mkolman)
+  Related: rhbz#1285519
+- network: fix ksdata generating for for non-active virtual devices (rvykydal)
+  Related: rhbz#1321288
+- network: update kickstart data also with bond bridge slaves (rvykydal)
+  Related: rhbz#1321288
+- network: add support for bridge bond slaves (rvykydal)
+  Resolves: rhbz#1321288
+- Fix bootDrive driveorder fallback (jkonecny)
+  Related: rhbz#1355795
+- Fix bootloader when re-using existing /boot part (jkonecny)
+  Related: rhbz#1355795
+- fix style guide test false positive on username variable (rvykydal)
+  Related: rhbz#1350375
+- Store logs before anaconda starts (japokorn)
+  Resolves: rhbz#1255659
+- DD can now replace existing drivers (japokorn)
+  Related: rhbz#1101653
+- tui: use functions instead of fake REs for checking values (rvykydal)
+  Related: rhbz#1350375
+- tui: get proper index of entry we are handling in input (rvykydal)
+  Related: rhbz#1331054
+- tui: fix user name validity checking (rvykydal)
+  Related: rhbz#1259284
+  Resolves: rhbz#1350375
+- Change bootloader boot drive fallback (jkonecny)
+  Resolves: rhbz#1355795
+- Make it possible to disable sshd service from running. (sbueno+anaconda)
+  Resolves: rhbz#1262707
+- Attempt to unload modules updated by a driver disk (dshea)
+  Resolves: rhbz#1101653
+- Fix the processing of device nodes as driver disks (dshea)
+  Related: rhbz#1269915
+
+* Fri Jul 08 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.80-1
+- Allow kickstart users to ignore the free space error (dshea)
+  Resolves: rhbz#1287308
+- Fix dhcpclass to work both via kickstart and the boot cmdline. (clumens)
+  Resolves: rhbz#1293051
+- Add support for device specification variants (mkolman)
+  Resolves: rhbz#1200833
+- Add NTP server configuration to the TUI (mkolman)
+  Resolves: rhbz#1269399
+- Move the NTP server checking constants to constants.py (mkolman)
+  Related: rhbz#1269399
+- Use a constant for the NTP check thread name prefix (mkolman)
+  Related: rhbz#1269399
+
+* Fri Jun 24 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.79-1
+- Fix adding new VG in Custom spoke can't be applied (jkonecny)
+  Resolves: rhbz#1263715
+- Fix pylint errors in Timezone. (dshea)
+  Related: rhbz#1312135
+- hostname: don't set installer env hostname to localhost.localdomain
+  (rvykydal)
+  Related: rhbz#1290858
+- Add the nosave option to the boot option docs file (mkolman)
+  Related: rhbz#1285519
+
+* Fri Jun 17 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.78-1
+- Use the RHEL 7 timezone kickstart command version (mkolman)
+  Resolves: rhbz#1312135
+- Use the signal handlers to set initial widget sensitivies (dshea)
+  Resolves: rhbz#1259742
+- Fix the name sensitivity in the custom spoke. (dshea)
+  Resolves: rhbz#1316269
+- Require network for network-based driver disks (dshea)
+  Resolves: rhbz#1261024
+
+* Fri Jun 10 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.77-1
+- Add wordwrap to text mode and use it by default (rvykydal)
+  Resolves: rhbz#1267881
+- Display storage errors that cause no disks to be selected (bcl)
+  Related: rhbz#1340240
+- Overwrite network files when using ks liveimg (bcl)
+  Resolves: rhbz#1342639
+
+* Wed Jun 08 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.76-1
+- Fix a covscan warning about fetch-driver-net (bcl)
+  Related: rhbz#1269915
+- network: handle also ifcfg files of not activated virtual devices (rvykydal)
+  Resolves: rhbz#1313173
+- network: check onboot value in ksdata, not NM connections (rvykydal)
+  Related: rhbz#1341636
+  Resolves: rhbz#1313173
+- network: do not activate device on kickstart --onboot="yes" (rvykydal)
+  Resolves: rhbz#1341636
+- Use the LUKS device for encrypted swap on RAID (dshea)
+  Related: rhbz#1302747
+- Use the LUKS device for swap in fstab (vpodzime)
+  Resolves: rhbz#1302747
+- Keep the subdir in driver disk update paths (dshea)
+  Resolves: rhbz#1296306
+- Warn about broken keyboard layout switching in VNC (jkonecny)
+  Resolves: rhbz#1274228
+- Make the anaconda-generator exit early outside of the installation
+  environment (mkolman)
+  Resolves: rhbz#1289179
+
+* Fri Jun 03 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.75-1
+- Add a button to refresh the disk list. (dlehman)
+  Resolves: rhbz#1191305
+- Fix some residual issues of dasdfmt in text-mode. (sbueno+anaconda)
+  Resolves: rhbz#1259437
+- Only try to restart payload in the Anaconda environment (mkolman)
+  Related: rhbz#1270354
+- Make current runtime environment identifiers available via flags (mkolman)
+  Related: rhbz#1270354
+- network tui: do not activate device when setting its onboot value (rvykydal)
+  Resolves: rhbz#1261864
+- network tui: edit persistent configuration, not active connection (rvykydal)
+  Related: rhbz#1261864
+- network: add support for --no-activate kickstart opton (rvykydal)
+  Resolves: rhbz#1277975
+- More descriptive message on invalid username (kvalek)
+  Resolves: rhbz#1259284
+- Don't mark an empty string for translation. (clumens)
+  Related: rhbz#1255094
+- Update the disk summary on Ctrl-A (dshea)
+  Resolves: rhbz#1264958
+- Added PROGRESS_REPORT for retry messages (kvalek)
+  Resolves: rhbz#1255094
+- Handle unsupported disklabels. (dlehman)
+  Related: rhbz#1266199
+  Related: rhbz#1294081
+- network: fix filtering of libvirt devices (check for None values) (rvykydal)
+  Related: rhbz#1298444
+- NFS DDs installation now works correctly (japokorn)
+  Resolves: rhbz#1269915
+
+* Fri May 27 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.74-1
+- Print an error when the kickstart file is missing (bcl)
+  Resolves: rhbz#1297380
+- Adapt the pwpolicy defaults to the old behavior (vpodzime)
+  Related: rhbz#1240303
+- Ignore addon and anaconda sections in handle-sshpw (bcl)
+  Related: rhbz#1240303
+- Ignore %%anaconda section in parse-kickstart (bcl)
+  Related: rhbz#1240303
+- Add documentation on %%anaconda kickstart command (bcl)
+  Related: rhbz#1240303
+- TUI pwpolicy setup was supposed to be in __init__ not refresh (bcl)
+  Related: rhbz#1240303
+- Fix pylint/translation issues from the pwpolicy patches. (clumens)
+  Related: rhbz#1240303
+- Implement %%anaconda kickstart section for pwpolicy (bcl)
+  Resolves: rhbz#1240303
+- Add pwpolicy support to TUI interface (bcl)
+  Related: rhbz#1240303
+- Add pwpolicy for the LUKS passphrase dialog. (bcl)
+  Related: rhbz#1240303
+- Add pwpolicy for the user spoke. (bcl)
+  Related: rhbz#1240303
+- Use pwpolicy for the root password spoke. (bcl)
+  Related: rhbz#1240303
+- hostname: add tooltip to Apply button (rvykydal)
+  Related: rhbz#1290858
+- hostname: fix accelerator collision (rvykydal)
+  Related: rhbz#1290858
+- hostname: don't set hostname in initrafms of target system (rvykydal)
+  Related: rhbz#1290858
+- hostname: set current hostname from target system hostname on demand
+  (rvykydal)
+  Related: rhbz#1290858
+- hostname: suggest current hostname for storage containers (rvykydal)
+  Related: rhbz#1290858
+- hostname: don't set target system static hostname to current hostname
+  (rvykydal)
+  Resolves: rhbz#1290858
+
+* Wed May 25 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.73-1
+- network: don't crash on devices with zero MAC address (rvykydal)
+  Resolves: rhbz#1334632
+- network: fix regression in network tui device configuration (rvykydal)
+  Resolves: rhbz#1338620
+- Fix TUI ErrorDialog processing (bcl)
+  Resolves: rhbz#1337427
+- Fix a pylint error in the source switch handler mixin (mkolman)
+  Related: rhbz#1275771
+- Don't crash when selecting the same hdd ISO again (mkolman)
+  Resolves: rhbz#1275771
+- Protect extended partition when ISO file is on logical partition (vtrefny)
+  Resolves: rhbz#1255237
+- Fix error handling for s390 bootloader errors (sbueno+anaconda)
+  Resolves: rhbz#1260934
+- Move yum.cache to disk after partitioning (bcl)
+  Resolves: rhbz#1287438
+
+* Fri May 13 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.72-1
+- Lower required squashfs ram to 350M (bcl)
+  Resolves: rhbz#1333113
+- Add epoch for anaconda-user-help & bump version (mkolman)
+  Related: rhbz#1275285
+- Specify string format arguments as logging function parameters (mkolman)
+  Related: rhbz#1235726
+
+* Wed May 11 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.71-1
+- Do not override StorageChecker.errors in StorageSpoke (vtrefny)
+  Resolves: rhbz#1269195
+- Add single language mode (mkolman)
+  Resolves: rhbz#1235726
+- Move default X keyboard setting out of the Welcome spoke (mkolman)
+  Related: rhbz#1235726
+- bootloader: Use shim on Aarch64. (pjones)
+  Resolves: rhbz#1256942
+- Fix bad indentation (rvykydal)
+  Related: rhbz#1265593
+- network: don't show libvirt virtual devices (rvykydal)
+  Related: rhbz#1298444
+- network: don't crash when adding device without connection to list (rvykydal)
+  Related: rhbz#1265593
+- Use a different ipmi command to log events. (clumens)
+  Resolves: rhbz#1268195
+- Add missing glib schema dependencies (dshea)
+  Related: rhbz#1324889
+- Compile glib schema overrides with --strict. (dshea)
+  Related: rhbz#1324889
+
+* Fri May 06 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.70-1
+- Don't join two absolute paths (mkolman)
+  Related: rhbz#1249598
+- Switch to the new Initial Setup unit name (mkolman)
+  Related: rhbz#1249598
+- Don't crash when taking a screenshot on the hub (mkolman)
+  Resolves: rhbz#1327456
+- network: validate netmask in tui (rvykydal)
+  Resolves: rhbz#1331054
+
+* Fri Apr 29 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.69-1
+- Check minimal memory requirements properly (jstodola)
+  Resolves: rhbz#1267673
+- Check that cache PVs (if any) are in the VG the LV belongs to (vpodzime)
+  Resolves: rhbz#1263258
+- Move settings_changed from NCB to Network Spoke (jkonecny)
+  Related: rhbz#1270354
+- Changes in network state revalidate sources rhbz#1270354 (riehecky)
+  Resolves: rhbz#1270354
+
+* Wed Apr 27 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.68-1
+- Update storage snapshot after running dasdfmt. (sbueno+anaconda)
+  Resolves: rhbz#1266151
+- Add access to the payload from addons (jkonecny)
+  Resolves: rhbz#1288636
+- Update the on-disk snapshot of storage when adv. disks are added (vpodzime)
+  Resolves: rhbz#1267944
+
+* Thu Apr 21 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.67-1
+- Combine formatting of LDL and unformatted DASDs. (sbueno+anaconda)
+  Resolves: rhbz#1316088
+- Move metacity settings into anaconda. (dshea)
+  Resolves: rhbz#1324889
+
+* Fri Apr 15 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.66-1
+- Check software selection in tui kickstart (bcl)
+  Resolves: rhbz#1320436
+- Run the checkSoftwareSelection even when no environment is selected (bcl)
+  Resolves: rhbz#1320436
+- Stop kickstart when space check fails (bcl)
+  Resolves: rhbz#1320436
+- Fix problem of DASDs not being formatted in text ks. (sbueno+anaconda)
+  Resolves: rhbz#1259437
+
+* Thu Apr 14 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.65-1
+- Move the pykickstart version test into a different subdirectory. (clumens)
+  Resolves: rhbz#1263367
+- Show network spoke in the TUI reconfig mode (mkolman)
+  Resolves: rhbz#1302165
+- iscsi: don't generate kickstart iscsi commands for offload devices (rvykydal)
+  Related: rhbz#1252879
+- iscsi: allow installing bootloader on offload iscsi disks (qla4xxx)
+  (rvykydal)
+  Resolves: rhbz#1325134
+- Fix iSCSI kickstart options aren't generated (jkonecny)
+  Resolves: rhbz#1252879
+- Fix adding offload iSCSI devices (vtrefny)
+  Resolves: rhbz#1255280
+
+* Fri Apr 08 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.64-1
+- Exclude software raid block devices from list-harddrives output (mkolman)
+  Resolves: rhbz#1311512
+
+* Tue Apr 05 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.63-1
+- network: don't set 803-3-ethernet.name setting (rvykydal)
+  Resolves: rhbz#1323589
+- Add retry when downloading .treeinfo (jkonecny)
+  Resolves: rhbz#1292613
+- Make it possible to skip saving of kickstarts and logs (mkolman)
+  Resolves: rhbz#1285519
+- Add a function for empty file creation (mkolman)
+  Related: rhbz#1285519
+- Run actions for argparse arguments (mkolman)
+  Related: rhbz#1285519
+
+* Fri Apr 01 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.62-1
+- Reset invalid disk selection before proceeding. (dlehman)
+  Resolves: rhbz#1265330
+- Fix bad sensitivity on boxes in source spoke (jkonecny)
+  Resolves: rhbz#1262833
+- Fix only one address is shown in anaconda (jkonecny)
+  Resolves: rhbz#1264400
+- network: copy static routes configured in installer to system (rvykydal)
+  Resolves: rhbz#1255801
+- network: fix kickstart --noipv4 option in %%pre section (rvykydal)
+  Related: rhbz#1291333
+- network: fix kickstart --noipv4 option (rvykydal)
+  Resolves: rhbz#1291333
+
+* Thu Mar 24 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.61-1
+- Fix crash when new device appear in Welcome screen (jkonecny)
+  Resolves: rhbz#1216926
+- Add reason when logging invalid repository (jkonecny)
+  Resolves: rhbz#1240379
+- network: fix vlan over bond in kickstart (rvykydal)
+  Resolves: rhbz#1234849
+
+* Fri Mar 18 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.60-1
+- Remove unused import in storage_utils (sbueno+anaconda)
+  Related: rhbz#1268025
+- Remove the last instance of singlePV (sbueno+anaconda)
+  Resolves: rhbz#1268025
+- Remove duplicate informational message from rescue mode. (sbueno+anaconda)
+  Resolves: rhbz#1249082
+- If doing dirinstall on s390x, don't prompt to login via ssh to begin install.
+  (sbueno+anaconda)
+  Resolves: rhbz#1269207
+- Fix a problem introduced by a cherry-pick (dshea)
+  Resolves: rhbz#1317558
+  Related: rhbz#1274855
+- Fix duplicate network settings in dracut (jkonecny)
+  Related: rhbz#1293539
+- Fix create device with bad name when parsing KS (jkonecny)
+  Resolves: rhbz#1293539
+- network: don't traceback when trying to turn off misconfigured team
+  connection (rvykydal)
+  Resolves: rhbz#1263971
+- network: don't set NM_CONTROLLED=no for root on SAN (rvykydal)
+  Resolves: rhbz#1273323
+- Use a lock for repoStore access (bcl)
+  Resolves: rhbz#1315414
+- network: use NAME to find ifcfg on s390 with net.ifnames=0 (rvykydal)
+  Resolves: rhbz#1249750
+- fix multiple inst.dd=<path> args (rhbz#1268792) (wwoods)
+  Resolves: rhbz#1268792
+- network: fix configuring team in kickstart pre (rvykydal)
+  Resolves: rhbz#1254929
+- network: Don't set --device link default for hostname only network cmd
+  (rvykydal)
+  Resolves: rhbz#1272274
+- Make the No Space dialog look less terrible. (clumens)
+  Resolves: rhbz#1264328
+
+* Thu Mar 10 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.59-1
+- Fix a DBus InvalidProperty handling (jkonecny)
+  Resolves: rhbz#1315843
+- Fix a bad usage of execWithRedirect (dshea)
+  Resolves: rhbz#1270319
+- Use an icon that exists in Adwaita for the dasd confirmation (dshea)
+  Related: rhbz#1259016
+- Translate the help button. (dshea)
+  Resolves: rhbz#1314451
+- Translate the required space labes in resize.py (dshea)
+  Resolves: rhbz#1314451
+- Increase yum debug logging level from 3 to 6 (jkonecny)
+  Resolves: rhbz#1254368
+
+* Fri Mar 04 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.58-1
+- Add device id to dasdfmt screen. (sbueno+anaconda)
+  Resolves: rhbz#1269174
+- Unify displayed columns in custom spoke dialogs. (sbueno+anaconda)
+  Resolves: rhbz#1289577
+- Show some confirmation to users if adding a DASD was successful.
+  (sbueno+anaconda)
+  Resolves: rhbz#1259016
+- Fix dasdfmt during graphical kickstart. (sbueno+anaconda)
+  Resolves: rhbz#1269863
+- Improve password salt creation (bcl)
+  Resolves: rhbz#1229474
+- Display a fatal error if unable to encrypt a password. (dshea)
+  Related: rhbz#1229474
+- NTP should have better behavior (jkonecny)
+  Resolves: rhbz#1260725
+
+* Tue Mar 01 2016 Brian C. Lane <bcl@redhat.com> - 21.48.22.57-1
+- Make sure pluginconf.d exists (bcl)
+  Resolves: rhbz#1271766
+- Check to see if DD repo is already in addOn list (bcl)
+  Resolves: rhbz#1268357
+- Add --sshkey to kickstart sshpw command (bcl)
+  Resolves: rhbz#1240410
+- Add sshkey kickstart command (bcl)
+  Resolves: rhbz#1311755
+- Fix nfs source crash when options change (bcl)
+  Resolves: rhbz#1264071
+- Fix pre-install script execution (bcl)
+  Related: rhbz#1311184
+- Add kickstart %%pre-install section support (bcl)
+  Resolves: rhbz#1311184
+- Fix a race between a window continuing and the next starting (dshea)
+  Resolves: rhbz#1255858
+- Don't process continue-clicked events for windows that aren't shown.
+  (clumens)
+  Related: rhbz#1255858
+- Generate resources.h before compiling widgets-common.c (dshea)
+  Related: rhbz#1243929
+- Use CSS to style the internal widgets. (dshea)
+  Resolves: rhbz#1243929
+- Lookup IPv6 address without brackets (bcl)
+  Resolves: rhbz#1267872
+- Copy rhsm logs to target system (bcl)
+  Resolves: rhbz#1130268
+- Add specific error string to TUI user dialog (bcl)
+  Resolves: rhbz#1248421
+- Make EditTUIDialog error generic (bcl)
+  Related: rhbz#1248421
+- Don't clear the _currentIsoFile if another iso was selected (bcl)
+  Related: rhbz#1274855
+- Fix problems with the hdiso method (clumens)
+  Resolves: rhbz#1274855
+- Always quote values in ifcfg- files (bcl)
+  Resolves: rhbz#1279131
+- Include original kickstart in /root/original-ks.cfg (bcl)
+  Resolves: rhbz#1227939
+- Manually set clock shifts on UI idle (rmarshall)
+  Resolves: rhbz#1251044
+- Import iutil earlier so we can use ipmi_report from check_for_ssh. (clumens)
+  Resolves: rhbz#1267658
+- In tui cmdline mode skip showError and log message (bcl)
+  Resolves: rhbz#1280371
+- Fix a typo in the hardware error message. (clumens)
+  Resolves: rhbz#1284165
+- Make reclaim work with small screens and big labels (dshea)
+  Resolves: rhbz#1262778
+- Use GtkResponseType values in the iso chooser dialog (dshea)
+  Resolves: rhbz#1265060
 
 * Thu Oct 29 2015 Brian C. Lane <bcl@redhat.com> - 21.48.22.56-1
 - Ignore interfaces with invalid VLAN IDs. (dshea)
