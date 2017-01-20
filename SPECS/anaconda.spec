@@ -3,7 +3,7 @@
 Summary: Graphical system installer
 Name:    anaconda
 Version: 21.48.22.93
-Release: 1%{?dist}.0.1
+Release: 1%{?dist}.0.2
 License: GPLv2+ and MIT
 Group:   Applications/System
 URL:     http://fedoraproject.org/wiki/Anaconda
@@ -241,7 +241,7 @@ runtime on NFS/HTTP/FTP servers or local disks.
 %patch6 -p1
 %patch7 -p1
 #% patch8 -p1
-#%patch100 -p1
+%patch100 -p1
 
 %build
 %configure --disable-static \
@@ -334,6 +334,11 @@ update-desktop-database &> /dev/null || :
 %{_prefix}/libexec/anaconda/dd_*
 
 %changelog
+* Fri Jan 20 2017 Shad L. Lords <slords@clearfoundation.com> - 21.48.22.93-1.el7.centos.0.2
+- Apply clearos branding patches
+- Add clearos install class
+- Remove user creation dialog
+
 * Thu Nov 30 2016 Johnny Hughes <johnny@centos.org> - 21.48.22.93-1.el7.centos.0.1
 - Refactor anaconda-centos-add-centos-install-class.patch for NM Autoconnect issue
 
