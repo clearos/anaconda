@@ -1,17 +1,7 @@
-From c72f979499f5af3091ad8f2017442b3728cdff2f Mon Sep 17 00:00:00 2001
-From: Colin Walters <walters@verbum.org>
-Date: Tue, 16 Jun 2015 11:24:20 -0400
-Subject: [PATCH] Rebase
-
----
- pyanaconda/packaging/rpmostreepayload.py | 67 ++++++++++++++++++++------------
- 1 file changed, 43 insertions(+), 24 deletions(-)
-
-diff --git a/pyanaconda/packaging/rpmostreepayload.py b/pyanaconda/packaging/rpmostreepayload.py
-index 5eacd9f..f979c3e 100644
---- a/pyanaconda/packaging/rpmostreepayload.py
-+++ b/pyanaconda/packaging/rpmostreepayload.py
-@@ -138,24 +138,25 @@ class RPMOSTreePayload(ArchivePayload):
+diff -uNrp anaconda-21.48.22.121.orig/pyanaconda/packaging/rpmostreepayload.py anaconda-21.48.22.121/pyanaconda/packaging/rpmostreepayload.py
+--- anaconda-21.48.22.121.orig/pyanaconda/packaging/rpmostreepayload.py	2017-06-21 12:44:34.000000000 +0000
++++ anaconda-21.48.22.121/pyanaconda/packaging/rpmostreepayload.py	2017-08-23 02:28:23.121006339 +0000
+@@ -142,24 +142,25 @@ class RPMOSTreePayload(ArchivePayload):
              ["admin", "--sysroot=" + iutil.getTargetPhysicalRoot(),
               "init-fs", iutil.getTargetPhysicalRoot()])
  
@@ -22,12 +12,12 @@ index 5eacd9f..f979c3e 100644
 +        repo = sysroot.get_repo(None)[1]
 +        # We don't support resuming from interrupted installs
 +        repo.set_disable_fsync(True)
++
++        self._remoteOptions = {}
  
 -        # Store this for use in postInstall too, where we need to
 -        # undo/redo this step.
 -        self._base_remote_args = ["remote", "add"]
-+        self._remoteOptions = {}
-+
 +        # Handle variations in pykickstart
          if ((hasattr(ostreesetup, 'noGpg') and ostreesetup.noGpg) or
              (hasattr(ostreesetup, 'nogpg') and ostreesetup.nogpg)):
@@ -50,7 +40,7 @@ index 5eacd9f..f979c3e 100644
          progressQ.send_message(_("Starting pull of %(branchName)s from %(source)s") % \
                                 {"branchName": ostreesetup.ref, "source": ostreesetup.remote})
  
-@@ -174,6 +175,14 @@ class RPMOSTreePayload(ArchivePayload):
+@@ -178,6 +179,14 @@ class RPMOSTreePayload(ArchivePayload):
  
          progressQ.send_message(_("Preparing deployment of %s") % (ostreesetup.ref, ))
  
@@ -65,12 +55,7 @@ index 5eacd9f..f979c3e 100644
          self._safeExecWithRedirect("ostree",
              ["admin", "--sysroot=" + iutil.getTargetPhysicalRoot(),
               "os-init", ostreesetup.osname])
-@@ -250,24 +259,34 @@ class RPMOSTreePayload(ArchivePayload):
- 
-     def postInstall(self):
-         super(RPMOSTreePayload, self).postInstall()
--
-+        
+@@ -257,20 +266,30 @@ class RPMOSTreePayload(ArchivePayload):
          from gi.repository import OSTree
          cancellable = None
  
@@ -111,6 +96,3 @@ index 5eacd9f..f979c3e 100644
  
          boot = iutil.getSysroot() + '/boot'
  
--- 
-1.8.3.1
-
